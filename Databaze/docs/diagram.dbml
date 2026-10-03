@@ -1,0 +1,111 @@
+Enum pohlavi_typ {
+  male
+  female
+  other
+}
+
+Enum role_typ {
+  user
+  admin
+}
+
+Enum stav_typ {
+  chci_videt
+  sleduji
+  videno
+}
+
+Table uzivatele {
+  id integer [pk, increment]
+  jmeno varchar(50) [not null]
+  prijmeni varchar(50) [not null]
+  email text [not null, note: 'šifrováno AES-256-GCM']
+  telefon text [not null, note: 'šifrováno AES-256-GCM']
+  pohlavi pohlavi_typ [not null]
+  foto_cesta varchar(255) [not null, note: 'JPEG 800 px, uploads/']
+  login varchar(20) [not null, unique]
+  heslo varchar(255) [not null, note: 'password_hash']
+  role role_typ [not null, default: 'user']
+  vytvoreno timestamp [default: `now()`]
+}
+
+Table serialy {
+  id integer [pk, increment]
+  nazev varchar(255) [not null]
+  popis text
+  rok_vydani smallint
+  api_id varchar(50) [unique, note: 'ID v externím API']
+  plakat_url varchar(500)
+  vytvoril_uzivatel_id integer [note: 'kdo seriál přidal']
+}
+
+Table zanry {
+  id integer [pk, increment]
+  nazev varchar(50) [not null, unique]
+}
+
+Table serialy_zanry {
+  serial_id integer [not null]
+  zanr_id integer [not null]
+
+  indexes {
+    (serial_id, zanr_id) [pk]
+  }
+}
+
+Table hodnoceni {
+  id integer [pk, increment]
+  serial_id integer [not null]
+  uzivatel_id integer [not null]
+  pocet_hvezd tinyint [not null, note: 'CHECK 1-5']
+  komentar text
+  datum_pridani timestamp [default: `now()`]
+
+  indexes {
+    (serial_id, uzivatel_id) [unique]
+  }
+}
+
+Table watchlist {
+  uzivatel_id integer [not null]
+  serial_id integer [not null]
+  stav stav_typ [not null, default: 'chci_videt']
+  pridano timestamp [default: `now()`]
+
+  indexes {
+    (uzivatel_id, serial_id) [pk]
+  }
+}
+
+Table zpravy {
+  id integer [pk, increment]
+  odesilatel_id integer [not null]
+  prijemce_id integer [not null]
+  predmet text [not null, note: 'šifrováno']
+  sifrovany_text text [not null, note: 'šifrováno']
+  cas_odeslani timestamp [default: `now()`]
+  precteno boolean [not null, default: false]
+  smazal_odesilatel boolean [not null, default: false]
+  smazal_prijemce boolean [not null, default: false]
+}
+
+Table notifikace {
+  id integer [pk, increment]
+  uzivatel_id integer [not null]
+  zprava_id integer
+  obsah_notifikace text [not null]
+  cas_vytvoreni timestamp [default: `now()`]
+  precteno boolean [not null, default: false]
+}
+
+Ref: serialy.vytvoril_uzivatel_id > uzivatele.id
+Ref: serialy_zanry.serial_id > serialy.id
+Ref: serialy_zanry.zanr_id > zanry.id
+Ref: hodnoceni.serial_id > serialy.id
+Ref: hodnoceni.uzivatel_id > uzivatele.id
+Ref: watchlist.uzivatel_id > uzivatele.id
+Ref: watchlist.serial_id > serialy.id
+Ref: zpravy.odesilatel_id > uzivatele.id
+Ref: zpravy.prijemce_id > uzivatele.id
+Ref: notifikace.uzivatel_id > uzivatele.id
+Ref: notifikace.zprava_id > zpravy.id
