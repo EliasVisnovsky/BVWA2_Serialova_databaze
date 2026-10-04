@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 const CRYPTO_CIPHER  = 'aes-256-gcm';
 const CRYPTO_IV_LEN  = 12;   

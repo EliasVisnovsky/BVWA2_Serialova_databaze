@@ -12,6 +12,7 @@
         <!--LOGIN-->
         <div id="loginForm" class="form-wrapper active">
             <h2>Login</h2>
+            <div id="loginInfo" class="alert alert-success" role="status" hidden></div>
             <form action="login.php" method="POST">
                 <div class="form-group">
                     <label for="login_user">Username</label>
@@ -31,22 +32,23 @@
         <!--REGISTER-->
         <div id="registerForm" class="form-wrapper">
             <h2>Registration</h2>
-            <form action="register.php" method="POST" enctype="multipart/form-data">
+            <form id="registerFormEl" action="register.php" method="POST" enctype="multipart/form-data" novalidate>
+                <div id="registerAlert" class="alert alert-error" role="alert" hidden></div>
                 <div class="form-group">
                     <label for="name">First Name</label>
-                    <input type="text" name="name" id="name" required pattern="[A-Za-zÀ-ž\s\-]+" title="Please enter a valid name (letters only)" placeholder="e.g. John">
+                    <input type="text" name="name" id="name" required maxlength="50" placeholder="e.g. John">
                 </div>
                 <div class="form-group">
                     <label for="surname">Last Name</label>
-                    <input type="text" name="surname" id="surname" required pattern="[A-Za-zÀ-ž\s\-]+" title="Please enter a valid surname (letters only)" placeholder="e.g. Doe">
+                    <input type="text" name="surname" id="surname" required maxlength="50" placeholder="e.g. Doe">
                 </div>
                 <div class="form-group">
                     <label for="email">E-mail</label>
-                    <input type="email" name="email" id="email" required placeholder="name@example.com">
+                    <input type="email" name="email" id="email" required maxlength="254" placeholder="name@example.com">
                 </div>
                 <div class="form-group">
                     <label for="phone_number">Phone Number</label>
-                    <input type="tel" id="phone_number" name="phone_number" required pattern="[0-9+\s]{9,15}" title="Please enter a valid phone number (9-15 digits, optionally starting with +)" placeholder="+420 123 456 789">
+                    <input type="tel" id="phone_number" name="phone_number" required placeholder="+420 123 456 789">
                 </div>
                 <div class="form-group">
                     <label for="gender">Gender</label>
@@ -58,15 +60,16 @@
                 </div>
                 <div class="form-group">
                     <label for="pfp">Profile Picture</label>
-                    <input type="file" name="pfp" id="pfp" accept="image/*" required>
+                    <input type="file" name="pfp" id="pfp" accept="image/jpeg,image/png,image/webp" required>
+                    <small class="hint">JPEG, PNG or WebP, max 2 MB, at least 200 x 200 px.</small>
                 </div>
                 <div class="form-group">
                     <label for="reg_login">Username</label>
-                    <input type="text" name="reg_login" id="reg_login" required pattern="[a-zA-Z0-9_]{4,20}" title="Login must be 4-20 characters long (letters, numbers, underscores only)" placeholder="username123">
+                    <input type="text" name="reg_login" id="reg_login" required placeholder="username123">
                 </div>
                 <div class="form-group">
                     <label for="reg_pass">Password</label>
-                    <input type="password" name="password" id="reg_pass" required minlength="8" title="Password must be at least 8 characters long" placeholder="Min. 8 characters">
+                    <input type="password" name="password" id="reg_pass" required placeholder="8-64 characters, a letter and a digit">
                 </div>
                 <button type="submit">Create Account</button>
             </form>
@@ -92,7 +95,7 @@
             }
         }
     </script>
-</body>
-</html>
+    <script src="js/validace.js"></script>
+    <script src="js/registrace.js"></script>
 </body>
 </html>

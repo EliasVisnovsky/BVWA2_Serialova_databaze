@@ -103,4 +103,4 @@ CREATE INDEX idx_notifikace_uzivatel ON notifikace(uzivatel_id, precteno);
 INSERT INTO zanry (nazev) VALUES
     ('Drama'), ('Komedie'), ('Sci-Fi'), ('Fantasy'),
     ('Thriller'), ('Krimi'), ('Horor'), ('Dokumentární'), ('Animovaný');
--- Admin se vkládá skriptem sql/seed_admin.php
+-- Admin a ukázková data se vkládají skriptem sql/seed.php

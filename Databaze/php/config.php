@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'db_path'        => __DIR__ . '/../data/serialy.db',

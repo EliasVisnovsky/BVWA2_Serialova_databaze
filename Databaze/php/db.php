@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $config = require __DIR__ . '/config.php';
 
 $pdo = new PDO('sqlite:' . $config['db_path']);
