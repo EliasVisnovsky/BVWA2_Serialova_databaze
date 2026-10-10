@@ -34,6 +34,8 @@ Table serialy {
   nazev varchar(255) [not null]
   popis text
   rok_vydani smallint
+  pocet_serii smallint
+  pocet_epizod smallint
   api_id varchar(50) [unique, note: 'ID v externím API']
   plakat_url varchar(500)
   vytvoril_uzivatel_id integer [note: 'kdo seriál přidal']

@@ -212,11 +212,13 @@ try {
 
     // seriály + žánry
     $idZanru = $pdo->query('SELECT nazev, id FROM zanry')->fetchAll(PDO::FETCH_KEY_PAIR);
-    $vlozSerial = $pdo->prepare('INSERT INTO serialy (nazev, popis, rok_vydani, vytvoril_uzivatel_id) VALUES (?, ?, ?, ?)');
+    $epizody = require __DIR__ . '/epizody.php';   // název => [počet sérií, počet epizod]
+    $vlozSerial = $pdo->prepare('INSERT INTO serialy (nazev, popis, rok_vydani, pocet_serii, pocet_epizod, vytvoril_uzivatel_id) VALUES (?, ?, ?, ?, ?, ?)');
     $vlozZanr = $pdo->prepare('INSERT INTO serialy_zanry (serial_id, zanr_id) VALUES (?, ?)');
     $idSerialu = [];
     foreach ($serialy as [$nazev, $rok, $zanry, $popis]) {
-        $vlozSerial->execute([$nazev, $popis, $rok, $idUzivatele['admin']]);
+        [$serii, $epizod] = $epizody[$nazev] ?? [null, null];
+        $vlozSerial->execute([$nazev, $popis, $rok, $serii, $epizod, $idUzivatele['admin']]);
         $idSerialu[$nazev] = (int)$pdo->lastInsertId();
         foreach ($zanry as $zanr) {
             if (!isset($idZanru[$zanr])) {

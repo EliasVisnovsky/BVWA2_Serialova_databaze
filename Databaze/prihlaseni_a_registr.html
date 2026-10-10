@@ -27,6 +27,9 @@
             <div class="under-text">
                     Don't have an account? <a onclick="toggleForms()">Sign up</a>
             </div>
+            <div class="under-text">
+                <a href="index.php">Continue without logging in</a>
+            </div>
         </div>
 
         <!--REGISTER-->
@@ -94,6 +97,23 @@
                 setTimeout(() => loginForm.classList.add('active'), 200);
             }
         }
+    </script>
+    <script>
+        // Hlášky po přesměrování z login.php / logout.php / ze stránek, které vyžadují přihlášení
+        (function () {
+            const kod = new URLSearchParams(location.search).get('login');
+            const zpravy = {
+                chyba:     ['Wrong username or password.', 'alert-error'],
+                nutne:     ['Please log in to continue.', 'alert-error'],
+                odhlaseno: ['You have been logged out.', 'alert-success']
+            };
+            if (!kod || !zpravy[kod]) return;
+            const box = document.getElementById('loginInfo');
+            box.textContent = zpravy[kod][0];
+            box.className = 'alert ' + zpravy[kod][1];
+            box.hidden = false;
+            history.replaceState(null, '', location.pathname);
+        })();
     </script>
     <script src="js/validace.js"></script>
     <script src="js/registrace.js"></script>

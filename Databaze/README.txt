@@ -43,3 +43,34 @@ register.php
 
 tests/parita.js
 - Ověří, že JS a PHP validují stejně: node tests/parita.js  (potřebuje node i php v PATH).
+
+index.php
+- Katalog seriálů: hledání podle názvu, filtr podle žánru, řazení (název / hodnocení / rok). Přihlášenému ukazuje jeho stav ve watchlistu a hodnocení.
+
+serial.php
+- Detail seriálu (serial.php?id=...): žánry, počet sérií a epizod, průměr a rozložení hvězdiček, tlačítka watchlistu (Chci vidět / Sleduji / Viděno),
+  vlastní hodnocení (1-5 hvězdiček + komentář) a hodnocení ostatních. Administrátor může mazat cizí hodnocení.
+
+profil.php
+- Můj účet: údaje o uživateli (e-mail a telefon se dešifrují), statistiky a záložky Chci vidět / Sleduji / Viděno / Moje hodnocení.
+  Stav seriálu jde změnit nebo seriál odebrat přímo tady, hodnocení se upravuje na detailu seriálu.
+
+watchlist.php, hodnoceni.php
+- Obsluha změn (jen POST + CSRF token): přidání / změna stavu / odebrání ze seznamu, uložení / smazání hodnocení.
+  Uložení hodnocení zařadí seriál do watchlistu jako "Viděno" (stav "Sleduji" zůstane).
+
+login.php, logout.php
+- Přihlášení (password_verify, nové ID session po přihlášení) a odhlášení. Automatické odhlášení po 20 minutách nečinnosti řeší php/auth.php.
+
+php/auth.php
+- Session, 20min timeout, CSRF tokeny, jednorázové hlášky (flash), ochrana přesměrování.
+
+php/layout.php
+- Společná hlavička/patička stránek a pomocné funkce pro výpis (hvězdičky, datum, skloňování).
+
+css/styl.css
+- Styly katalogu, detailu a profilu (navazují na prihlaseni_a_registr_styl.css).
+
+sql/epizody.php, sql/migrace_epizody.php
+- Počty sérií a epizod ukázkových seriálů. Migrace přidá sloupce pocet_serii a pocet_epizod do už existující databáze (php sql/migrace_epizody.php,
+  jde spustit opakovaně). Nová databáze je dostane rovnou ze sql/schema.sql a sql/seed.php.

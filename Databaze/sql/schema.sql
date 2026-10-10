@@ -21,6 +21,8 @@ CREATE TABLE serialy (
     nazev                 TEXT NOT NULL,
     popis                 TEXT,
     rok_vydani            INTEGER,
+    pocet_serii           INTEGER CHECK (pocet_serii IS NULL OR pocet_serii > 0),
+    pocet_epizod          INTEGER CHECK (pocet_epizod IS NULL OR pocet_epizod > 0),
     api_id                TEXT UNIQUE,
     plakat_url            TEXT,
     vytvoril_uzivatel_id  INTEGER,
