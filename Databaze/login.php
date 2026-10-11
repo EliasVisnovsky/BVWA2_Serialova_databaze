@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Přihlášení. Očekává POST z prihlaseni_a_registr.html (pole login, password).
+ * Přihlášení. Očekává POST z prihlaseni.php (pole login, password).
  * Úspěch -> přesměrování na stránku, ze které uživatel přišel (nebo na katalog).
  * Chyba  -> zpět na formulář s ?login=chyba (hláška je záměrně obecná, ať se nedá zjistit, které loginy existují).
  */

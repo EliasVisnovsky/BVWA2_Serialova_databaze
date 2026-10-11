@@ -93,3 +93,22 @@ function validuj_registraci(array $vstup): array
     }
     return $chyby;
 }
+
+/**
+ * Validace úpravy osobních údajů na stránce Můj účet (jméno, příjmení, e-mail, telefon, pohlaví).
+ * Používá STEJNÁ pravidla jako registrace (REGISTRACE_PRAVIDLA), takže js/validace.js se nemění.
+ * Login a heslo se tady neupravují.
+ */
+function validuj_udaje_uctu(array $vstup): array
+{
+    $chyby = [];
+    foreach (['name', 'surname', 'email', 'phone_number'] as $pole) {
+        if (($chyba = validuj_pole($pole, registrace_trim((string)($vstup[$pole] ?? '')))) !== null) {
+            $chyby[$pole] = $chyba;
+        }
+    }
+    if (!in_array((string)($vstup['gender'] ?? ''), REGISTRACE_POHLAVI, true)) {
+        $chyby['gender'] = HLASKA_POHLAVI;
+    }
+    return $chyby;
+}

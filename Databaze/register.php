@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Registrace nového uživatele.
  *
- * Očekává POST (multipart/form-data) z prihlaseni_a_registr.html.
+ * Očekává POST (multipart/form-data) z prihlaseni.php.
  *  - Požadavek z JS (hlavička Accept: application/json) dostane JSON:
  *      úspěch  -> 200 {"ok": true,  "zprava": "..."}
  *      chyba   -> 422 {"ok": false, "chyby": {"pole": "hláška", ...}}   (klíč "_obecna" = chyba bez pole)
@@ -16,7 +16,7 @@ require __DIR__ . '/php/crypto.php';
 require __DIR__ . '/php/validace.php';
 require __DIR__ . '/php/foto.php';
 
-const FORMULAR = 'prihlaseni_a_registr.html';
+const FORMULAR = 'prihlaseni.php';
 
 $jeJson = stripos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false;
 

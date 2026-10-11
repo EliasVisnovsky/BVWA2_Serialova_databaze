@@ -7,7 +7,7 @@ declare(strict_types=1);
  */
 
 const SESSION_NECINNOST = 20 * 60;   // 20 minut bez aktivity = odhlášení
-const STRANA_PRIHLASENI = 'prihlaseni_a_registr.html';
+const STRANA_PRIHLASENI = 'prihlaseni.php';
 
 function session_spust(): void
 {

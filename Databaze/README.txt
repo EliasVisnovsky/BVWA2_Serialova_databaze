@@ -55,6 +55,22 @@ profil.php
 - Můj účet: údaje o uživateli (e-mail a telefon se dešifrují), statistiky a záložky Chci vidět / Sleduji / Viděno / Moje hodnocení.
   Stav seriálu jde změnit nebo seriál odebrat přímo tady, hodnocení se upravuje na detailu seriálu.
 
+profil_uprava.php, js/profil_uprava.js
+- Úprava osobních údajů (jméno, příjmení, e-mail, telefon, pohlaví) a výměna profilové fotky (nepovinná, bez výběru zůstane stávající).
+  Stejná pravidla jako registrace (php/validace.php, php/foto.php, js/validace.js), e-mail a telefon se ukládají šifrovaně, upravit jde jen vlastní účet.
+
+profil_prihlaseni.php, js/profil_prihlaseni.js
+- Změna loginu a/nebo hesla. Každá změna vyžaduje současné heslo; login i nové heslo se kontrolují stejnými pravidly jako při registraci,
+  obsazený login se odmítne (login je bez ohledu na velikost písmen unikátní), heslo se ukládá jen jako hash a po změně se vygeneruje nové ID session.
+
+zpravy.php
+- Schránka přijatých zpráv a oznámení (předmět i text se dešifrují až při zobrazení). Otevření stránky označí zprávy a notifikace jako přečtené,
+  nové jsou zvýrazněné. Zprávu jde smazat jen ze své schránky. Počet nepřečtených je jako odznak v navigaci (php/layout.php).
+
+admin_oznameni.php, js/admin_oznameni.js
+- Hromadné oznámení (jen administrátor, kontrola role na serveru + CSRF): jedna zpráva všem ostatním uživatelům, např. o odstávce.
+  Pro každého příjemce se vloží řádek do zpravy (předmět i text šifrovaně) a notifikace do notifikace, vše v jedné transakci. Před odesláním se ptá na potvrzení.
+
 watchlist.php, hodnoceni.php
 - Obsluha změn (jen POST + CSRF token): přidání / změna stavu / odebrání ze seznamu, uložení / smazání hodnocení.
   Uložení hodnocení zařadí seriál do watchlistu jako "Viděno" (stav "Sleduji" zůstane).
@@ -66,10 +82,12 @@ php/auth.php
 - Session, 20min timeout, CSRF tokeny, jednorázové hlášky (flash), ochrana přesměrování.
 
 php/layout.php
-- Společná hlavička/patička stránek a pomocné funkce pro výpis (hvězdičky, datum, skloňování).
+- Společná hlavička/patička stránek (vzhled EPILOG: Tailwind CSS, Alpine.js a GSAP z CDN, bez vlastních css souborů), navigace s odkazem Messages
+  a odznakem počtu nepřečtených zpráv, odkaz Oznámení pro administrátora a pomocné funkce pro výpis (hvězdičky, datum, skloňování).
 
-css/styl.css
-- Styly katalogu, detailu a profilu (navazují na prihlaseni_a_registr_styl.css).
+prihlaseni.php
+- Přihlašovací a registrační stránka (nahradila prihlaseni_a_registr.html). Formuláře odesílají na login.php a register.php,
+  kontrola polí v prohlížeči používá js/validace.js a js/registrace.js.
 
 sql/epizody.php, sql/migrace_epizody.php
 - Počty sérií a epizod ukázkových seriálů. Migrace přidá sloupce pocet_serii a pocet_epizod do už existující databáze (php sql/migrace_epizody.php,
