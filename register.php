@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Registrace nového uživatele.
  *
- * Očekává POST (multipart/form-data) z prihlaseni_a_registr.html.
+ * Očekává POST (multipart/form-data) z prihlaseni.php.
  *  - Požadavek z JS (hlavička Accept: application/json) dostane JSON:
  *      úspěch  -> 200 {"ok": true,  "zprava": "..."}
  *      chyba   -> 422 {"ok": false, "chyby": {"pole": "hláška", ...}}   (klíč "_obecna" = chyba bez pole)

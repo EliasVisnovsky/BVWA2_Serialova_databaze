@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Můj účet: údaje o uživateli, statistiky a přehled toho, co chce uživatel vidět, co sleduje,
  * co už viděl a co ohodnotil. Odkazy vedou na detail seriálu, kde jde stav i hodnocení měnit;
- * stav a odebrání jde upravit i přímo tady.
+ * stav a odebrání jde upravit i přímo tady. Osobní údaje a fotka se mění na profil_uprava.php.
  */
 
 require __DIR__ . '/php/db.php';
@@ -75,102 +75,109 @@ $navrat = 'profil.php?z=' . $zalozka;
 
 hlavicka('Můj účet', $uzivatel, 'profil');
 ?>
-<h1>Můj účet</h1>
+<main class="w-full max-w-5xl mx-auto pt-[150px] pb-20 px-[4vw]">
+<h1 class="text-4xl sm:text-6xl font-black uppercase tracking-tighter mb-10">Můj účet</h1>
 
-<section class="profil-hlavicka">
-    <img class="avatar avatar-obri" src="<?= h($uzivatel['foto_cesta']) ?>" alt="Moje profilová fotka">
-    <div>
-        <h2><?= h($uzivatel['jmeno'] . ' ' . $uzivatel['prijmeni']) ?>
-            <?php if ($uzivatel['role'] === 'admin'): ?><span class="stitek stitek-admin">Administrátor</span><?php endif; ?>
+<section class="flex flex-wrap gap-8 items-start mb-10">
+    <img class="w-32 h-32 rounded-full object-cover bg-epilogCard border border-white/10" src="<?= h($uzivatel['foto_cesta']) ?>" alt="Moje profilová fotka">
+    <div class="flex-1 min-w-[260px]">
+        <h2 class="text-2xl font-black uppercase">
+            <?= h($uzivatel['jmeno'] . ' ' . $uzivatel['prijmeni']) ?>
+            <?php if ($uzivatel['role'] === 'admin'): ?><span class="ml-2 align-middle bg-white text-epilogBg text-xs font-bold uppercase px-2 py-0.5">Administrátor</span><?php endif; ?>
         </h2>
-        <dl class="udaje udaje-radky">
-            <div><dt>Login</dt><dd><?= h($uzivatel['login']) ?></dd></div>
-            <div><dt>E-mail</dt><dd><?= h($email) ?></dd></div>
-            <div><dt>Telefon</dt><dd><?= h($telefon) ?></dd></div>
-            <div><dt>Účet od</dt><dd><?= h(datum_cs($uzivatel['vytvoreno'])) ?></dd></div>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3 mt-4">
+            <div><dt class="text-xs uppercase font-bold tracking-wider text-white/50">Login</dt><dd class="mt-0.5 break-all"><?= h($uzivatel['login']) ?></dd></div>
+            <div><dt class="text-xs uppercase font-bold tracking-wider text-white/50">E-mail</dt><dd class="mt-0.5 break-all"><?= h($email) ?></dd></div>
+            <div><dt class="text-xs uppercase font-bold tracking-wider text-white/50">Telefon</dt><dd class="mt-0.5"><?= h($telefon) ?></dd></div>
+            <div><dt class="text-xs uppercase font-bold tracking-wider text-white/50">Účet od</dt><dd class="mt-0.5"><?= h(datum_cs($uzivatel['vytvoreno'])) ?></dd></div>
         </dl>
+        <p class="flex flex-wrap gap-3 mt-6">
+            <a class="tl" href="profil_uprava.php">Upravit údaje a fotku</a>
+            <a class="tl" href="profil_prihlaseni.php">Změnit login a heslo</a>
+        </p>
     </div>
 </section>
 
-<section class="statistiky" aria-label="Statistiky">
-    <div><strong><?= (int)($pocty['chci_videt'] ?? 0) ?></strong><span>chci vidět</span></div>
-    <div><strong><?= (int)($pocty['sleduji'] ?? 0) ?></strong><span>sleduji</span></div>
-    <div><strong><?= (int)($pocty['videno'] ?? 0) ?></strong><span>viděno</span></div>
-    <div><strong><?= $pocty['hodnoceni'] ?></strong><span>hodnocení<?= $pocty['hodnoceni'] ? ' · Ø ' . cislo_cs((float)$mojeStat['prumer']) . ' ★' : '' ?></span></div>
-    <div><strong><?= $videnoEpizod ?></strong><span><?= sklonuj($videnoEpizod, 'zhlédnutá epizoda', 'zhlédnuté epizody', 'zhlédnutých epizod') ?></span></div>
+<section class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10" aria-label="Statistiky">
+    <div class="bg-epilogCard border border-white/10 rounded p-4"><strong class="block text-3xl font-black"><?= (int)($pocty['chci_videt'] ?? 0) ?></strong><span class="text-xs uppercase font-bold tracking-wider text-white/50">chci vidět</span></div>
+    <div class="bg-epilogCard border border-white/10 rounded p-4"><strong class="block text-3xl font-black"><?= (int)($pocty['sleduji'] ?? 0) ?></strong><span class="text-xs uppercase font-bold tracking-wider text-white/50">sleduji</span></div>
+    <div class="bg-epilogCard border border-white/10 rounded p-4"><strong class="block text-3xl font-black"><?= (int)($pocty['videno'] ?? 0) ?></strong><span class="text-xs uppercase font-bold tracking-wider text-white/50">viděno</span></div>
+    <div class="bg-epilogCard border border-white/10 rounded p-4"><strong class="block text-3xl font-black"><?= $pocty['hodnoceni'] ?></strong><span class="text-xs uppercase font-bold tracking-wider text-white/50">hodnocení<?= $pocty['hodnoceni'] ? ' · Ø ' . cislo_cs((float)$mojeStat['prumer']) . ' ★' : '' ?></span></div>
+    <div class="bg-epilogCard border border-white/10 rounded p-4"><strong class="block text-3xl font-black"><?= $videnoEpizod ?></strong><span class="text-xs uppercase font-bold tracking-wider text-white/50"><?= sklonuj($videnoEpizod, 'zhlédnutá epizoda', 'zhlédnuté epizody', 'zhlédnutých epizod') ?></span></div>
 </section>
 
-<nav class="zalozky" aria-label="Přehled seriálů">
+<nav class="flex flex-wrap gap-x-8 gap-y-2 border-b border-white/15 mb-8" aria-label="Přehled seriálů">
     <?php foreach (ZALOZKY as $klic => $popis): ?>
-        <a href="profil.php?z=<?= h($klic) ?>"<?= $zalozka === $klic ? ' class="aktivni" aria-current="page"' : '' ?>>
-            <?= h($popis) ?> <span class="pocitadlo"><?= (int)($pocty[$klic] ?? 0) ?></span>
+        <a href="profil.php?z=<?= h($klic) ?>" class="pb-3 -mb-px text-sm font-bold uppercase tracking-widest border-b-2 transition-colors <?= $zalozka === $klic ? 'border-white text-white' : 'border-transparent text-white/50 hover:text-white' ?>"<?= $zalozka === $klic ? ' aria-current="page"' : '' ?>>
+            <?= h($popis) ?> <span class="ml-1 text-white/40"><?= (int)($pocty[$klic] ?? 0) ?></span>
         </a>
     <?php endforeach; ?>
 </nav>
 
 <?php if (!$polozky): ?>
-    <p class="prazdno">
+    <p class="text-white/50 py-8">
         <?= $zalozka === 'hodnoceni' ? 'Zatím jste nic neohodnotili.' : 'V této části zatím nic nemáte.' ?>
-        <a href="index.php">Procházet katalog</a>
+        <a class="text-white underline font-bold" href="index.php">Procházet katalog</a>
     </p>
 <?php else: ?>
-    <ul class="seznam">
+    <ul class="list-none p-0 m-0">
         <?php foreach ($polozky as $p): ?>
-            <li class="polozka">
-                <a href="serial.php?id=<?= (int)$p['id'] ?>" class="polozka-plakat" tabindex="-1" aria-hidden="true"><?= plakat_html($p, 'plakat-maly') ?></a>
-                <div class="polozka-text">
-                    <h3><a href="serial.php?id=<?= (int)$p['id'] ?>"><?= h($p['nazev']) ?></a>
-                        <span class="rok">(<?= h((string)$p['rok_vydani']) ?>)</span></h3>
-                    <p class="meta"><?= h(epizody_text($p['pocet_serii'] !== null ? (int)$p['pocet_serii'] : null, $p['pocet_epizod'] !== null ? (int)$p['pocet_epizod'] : null)) ?></p>
+            <li class="flex flex-wrap sm:flex-nowrap gap-5 py-5 border-b border-white/10">
+                <a href="serial.php?id=<?= (int)$p['id'] ?>" class="block w-16 shrink-0 aspect-[2/3] overflow-hidden rounded bg-epilogCard" tabindex="-1" aria-hidden="true"><?= plakat_html($p, 'w-full h-full object-cover') ?></a>
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-black uppercase"><a class="hover:underline" href="serial.php?id=<?= (int)$p['id'] ?>"><?= h($p['nazev']) ?></a>
+                        <span class="font-normal text-white/50">(<?= h((string)$p['rok_vydani']) ?>)</span></h3>
+                    <p class="text-xs text-white/50 mt-1"><?= h(epizody_text($p['pocet_serii'] !== null ? (int)$p['pocet_serii'] : null, $p['pocet_epizod'] !== null ? (int)$p['pocet_epizod'] : null)) ?></p>
 
                     <?php if ($zalozka === 'hodnoceni'): ?>
-                        <p><?= hvezdy_html((float)$p['pocet_hvezd']) ?> <span class="meta"><?= h(datum_cs($p['datum_pridani'])) ?></span></p>
+                        <p class="mt-2"><?= hvezdy_html((float)$p['pocet_hvezd']) ?> <span class="text-xs text-white/50"><?= h(datum_cs($p['datum_pridani'])) ?></span></p>
                         <?php if ($p['komentar'] !== null && $p['komentar'] !== ''): ?>
-                            <p class="komentar"><?= nl2br(h($p['komentar'])) ?></p>
+                            <p class="mt-2 text-white/70 break-words"><?= nl2br(h($p['komentar'])) ?></p>
                         <?php endif; ?>
                     <?php elseif ($p['pocet_hvezd']): ?>
-                        <p><?= hvezdy_html((float)$p['pocet_hvezd']) ?> <span class="meta">moje hodnocení</span></p>
+                        <p class="mt-2"><?= hvezdy_html((float)$p['pocet_hvezd']) ?> <span class="text-xs text-white/50">moje hodnocení</span></p>
                     <?php else: ?>
-                        <p class="meta">Zatím neohodnoceno · <a href="serial.php?id=<?= (int)$p['id'] ?>#hodnoceni">ohodnotit</a></p>
+                        <p class="text-xs text-white/50 mt-2">Zatím neohodnoceno · <a class="text-white underline" href="serial.php?id=<?= (int)$p['id'] ?>#hodnoceni">ohodnotit</a></p>
                     <?php endif; ?>
                 </div>
 
-                <div class="polozka-akce">
+                <div class="flex flex-row sm:flex-col items-start sm:items-end gap-2">
                     <?php if ($zalozka === 'hodnoceni'): ?>
-                        <a class="tl" href="serial.php?id=<?= (int)$p['id'] ?>#hodnoceni">Upravit</a>
-                        <form action="hodnoceni.php" method="POST" class="inline" onsubmit="return confirm('Opravdu smazat toto hodnocení?');">
+                        <a class="tl text-xs !px-3 !py-1.5" href="serial.php?id=<?= (int)$p['id'] ?>#hodnoceni">Upravit</a>
+                        <form action="hodnoceni.php" method="POST" onsubmit="return confirm('Opravdu smazat toto hodnocení?');">
                             <?= csrf_pole() ?>
                             <input type="hidden" name="akce" value="smaz">
                             <input type="hidden" name="hodnoceni_id" value="<?= (int)$p['hodnoceni_id'] ?>">
                             <input type="hidden" name="navrat" value="<?= h($navrat) ?>">
-                            <button type="submit" class="tl-odkaz tl-nebezpecne">Smazat</button>
+                            <button type="submit" class="tl-odkaz tl-nebezpecne text-xs">Smazat</button>
                         </form>
                     <?php else: ?>
-                        <form action="watchlist.php" method="POST" class="stav-form">
+                        <form action="watchlist.php" method="POST">
                             <?= csrf_pole() ?>
                             <input type="hidden" name="serial_id" value="<?= (int)$p['id'] ?>">
                             <input type="hidden" name="akce" value="nastav">
                             <input type="hidden" name="navrat" value="<?= h($navrat) ?>">
-                            <label class="skryty" for="stav-<?= (int)$p['id'] ?>">Stav seriálu <?= h($p['nazev']) ?></label>
-                            <select id="stav-<?= (int)$p['id'] ?>" name="stav" onchange="this.form.submit()">
+                            <label class="sr-only" for="stav-<?= (int)$p['id'] ?>">Stav seriálu <?= h($p['nazev']) ?></label>
+                            <select id="stav-<?= (int)$p['id'] ?>" name="stav" onchange="this.form.submit()" class="brutal-input !w-auto !py-1.5 !px-3 text-xs">
                                 <?php foreach (STAVY_WATCHLISTU as $klic => $popis): ?>
                                     <option value="<?= h($klic) ?>"<?= $p['stav'] === $klic ? ' selected' : '' ?>><?= h($popis) ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <noscript><button type="submit" class="tl">Změnit</button></noscript>
+                            <noscript><button type="submit" class="tl text-xs">Změnit</button></noscript>
                         </form>
-                        <form action="watchlist.php" method="POST" class="inline">
+                        <form action="watchlist.php" method="POST">
                             <?= csrf_pole() ?>
                             <input type="hidden" name="serial_id" value="<?= (int)$p['id'] ?>">
                             <input type="hidden" name="akce" value="odeber">
                             <input type="hidden" name="navrat" value="<?= h($navrat) ?>">
-                            <button type="submit" class="tl-odkaz tl-nebezpecne">Odebrat</button>
+                            <button type="submit" class="tl-odkaz tl-nebezpecne text-xs">Odebrat</button>
                         </form>
                     <?php endif; ?>
                 </div>
             </li>
         <?php endforeach; ?>
     </ul>
-<?php endif;
-
+<?php endif; ?>
+</main>
+<?php
 paticka();
