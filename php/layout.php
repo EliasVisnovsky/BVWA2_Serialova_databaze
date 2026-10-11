@@ -62,9 +62,27 @@ function plakat_html(array $serial, string $trida = ''): string {$url = (string)
 }
 
 /**
+ * Počet nepřečtených notifikací uživatele (odznak u odkazu Messages v navigaci).
+ * Chyba databáze nesmí shodit celou stránku, proto se v takovém případě vrací 0.
+ */
+function pocet_neprectenych(?PDO $pdo, ?array $uzivatel): int {
+    if ($pdo === null || $uzivatel === null) return 0;
+    try {
+        $stmt = $pdo->prepare('SELECT COUNT(*) FROM notifikace WHERE uzivatel_id = ? AND precteno = 0');
+        $stmt->execute([(int)$uzivatel['id']]);
+        return (int)$stmt->fetchColumn();
+    } catch (Throwable $e) {
+        return 0;
+    }
+}
+
+/**
  * Outputs the HTML document head, loads external frameworks, and renders top navigation.
  */
-function hlavicka(string $titulek, ?array $uzivatel, string $aktivni = ''): void {$flash = flash_vyber();
+function hlavicka(string $titulek, ?array $uzivatel, string $aktivni = ''): void {
+    global $pdo;   // stránky načítají php/db.php na nejvyšší úrovni, takže $pdo je globální
+    $neprectene = pocet_neprectenych(isset($pdo) && $pdo instanceof PDO ? $pdo : null, $uzivatel);
+    $flash = flash_vyber();
     ?>
 <!DOCTYPE html>
 <html lang="cs">
@@ -104,6 +122,10 @@ function hlavicka(string $titulek, ?array $uzivatel, string $aktivni = ''): void
             .tl-primarni { @apply bg-white text-epilogBg; }
             .tl-odkaz { @apply bg-transparent text-white/50 font-bold uppercase underline hover:text-white transition-colors; }
             .tl-nebezpecne { @apply hover:bg-red-500 hover:border-red-500 hover:text-white hover:no-underline px-3 py-1; }
+            /* Formuláře účtu a zprávy (profil_uprava.php, profil_prihlaseni.php, admin_oznameni.php, zpravy.php) */
+            .field-error { @apply text-red-400 text-xs font-bold mt-1.5; }
+            .invalid { @apply border-red-500; }
+            .odznak { @apply inline-block min-w-[1.25rem] px-1.5 rounded-full bg-red-500 text-white text-[11px] leading-5 text-center align-middle; }
         }
     </style>
 </head>
@@ -112,7 +134,11 @@ function hlavicka(string $titulek, ?array $uzivatel, string $aktivni = ''): void
     <!-- Main Navigation Bar -->
     <nav class="nav-element fixed top-0 left-0 w-full px-[4vw] pt-[37px] pb-4 flex flex-wrap justify-between items-center z-[999] bg-gradient-to-b from-epilogBg/90 to-transparent">
         <div class="flex items-center gap-6 w-[70%] sm:w-auto">
-            <span class="text-[15px] text-white/90 cursor-pointer hover:text-white transition-opacity">Messages</span>
+            <?php if ($uzivatel): ?>
+                <a href="zpravy.php" class="text-[15px] hover:text-white transition-opacity <?= $aktivni === 'zpravy' ? 'text-white' : 'text-white/90' ?>">Messages<?php if ($neprectene > 0): ?> <span class="odznak" aria-label="<?= $neprectene ?> nepřečtených"><?= $neprectene ?></span><?php endif; ?></a>
+            <?php else: ?>
+                <span class="text-[15px] text-white/90 cursor-pointer hover:text-white transition-opacity">Messages</span>
+            <?php endif; ?>
             <button class="text-white hover:scale-110 transition-transform" @click="openSearch()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </button>
@@ -124,6 +150,9 @@ function hlavicka(string $titulek, ?array $uzivatel, string $aktivni = ''): void
 
         <div class="flex items-center gap-5 w-[30%] sm:w-auto justify-end">
             <?php if ($uzivatel): ?>
+                <?php if ($uzivatel['role'] === 'admin'): ?>
+                    <a href="admin_oznameni.php" class="text-[15px] hover:text-white <?= $aktivni === 'admin' ? 'text-white' : 'text-white/90' ?>">Oznámení</a>
+                <?php endif; ?>
                 <a href="profil.php" class="text-[15px] text-white/90 hover:text-white"><?= h($uzivatel['jmeno']) ?></a>
                 <form action="logout.php" method="POST" class="m-0">
                     <?= csrf_pole() ?>
